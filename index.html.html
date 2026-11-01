@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Finanzas escolares · Mesa de exposición</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E3E9EE; --panel:#F5F7F9; --ink:#13203A; --muted:#4D5C75; --line:#C5CFD9;
+  --key:#FFFFFF; --key-edge:#A9B6C4; --accent:#C8102E; --accent-ink:#FFFFFF;
+  --ok:#0B7A75; --warn:#9A5B00; --bad:#B3122B;
+  --lcd:#BFD0A8; --lcd-ink:#1C2A17; --lcd-dim:#4F6143;
+  --c1:#C8102E; --c2:#0B7A75; --c3:#D99A00; --c4:#13203A; --grid:#D3DBE3;
+  --focus:#1B5FD6;
+  --font:"Bricolage Grotesque", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "Courier New", monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E141D; --panel:#161F2C; --ink:#E6ECF3; --muted:#9AA9BE; --line:#2A3748;
+    --key:#1F2B3C; --key-edge:#070B11; --accent:#FF5A6E; --accent-ink:#1A0006;
+    --ok:#3CC4BC; --warn:#F0B44C; --bad:#FF7A8A;
+    --c1:#FF6B7C; --c2:#3CC4BC; --c3:#F0B44C; --c4:#B8C6DA; --grid:#25313F;
+    --focus:#7AA8FF; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E141D; --panel:#161F2C; --ink:#E6ECF3; --muted:#9AA9BE; --line:#2A3748;
+  --key:#1F2B3C; --key-edge:#070B11; --accent:#FF5A6E; --accent-ink:#1A0006;
+  --ok:#3CC4BC; --warn:#F0B44C; --bad:#FF7A8A;
+  --c1:#FF6B7C; --c2:#3CC4BC; --c3:#F0B44C; --c4:#B8C6DA; --grid:#25313F;
+  --focus:#7AA8FF; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:100%;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 7rem)}
+html.big{font-size:125%}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:1rem;line-height:1.5;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Cabecera con pantalla LCD */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line);
+  padding:.7rem max(1rem,env(safe-area-inset-left,0px)) .7rem max(1rem,env(safe-area-inset-right,0px));
+  display:grid;grid-template-columns:1fr minmax(240px,420px) auto;gap:.8rem 1.2rem;align-items:center}
+.brand h1{margin:0;font-size:1.35rem;line-height:1.1;font-weight:800;letter-spacing:-.01em}
+.brand p{margin:.15rem 0 0;color:var(--muted);font-size:.9rem}
+.lcd{background:var(--lcd);color:var(--lcd-ink);border-radius:10px;padding:.45rem .9rem .5rem;font-family:var(--mono);
+  box-shadow:inset 0 3px 8px rgba(0,0,0,.28),0 0 0 3px var(--key-edge);min-width:0}
+.lcd-label{font-size:.72rem;color:var(--lcd-dim);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lcd-value{font-size:1.9rem;font-weight:600;text-align:right;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em}
+.tools{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:flex-end}
+.btn{font:inherit;font-weight:600;font-size:.9rem;background:var(--key);color:var(--ink);border:2px solid var(--line);border-bottom:4px solid var(--key-edge);
+  border-radius:10px;padding:.4rem .8rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.4rem;min-height:2.5rem}
+.btn:active{transform:translateY(2px);border-bottom-width:2px}
+.btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.small{font-size:.82rem;padding:.25rem .6rem;min-height:2rem}
+@media (max-width:760px){
+  .top{grid-template-columns:1fr auto}
+  .lcd{grid-column:1 / -1;order:3}
+  .lcd-value{font-size:1.6rem}
+}
+
+main{max-width:1040px;margin:0 auto;padding:1.4rem max(1rem,env(safe-area-inset-left,0px)) 2rem max(1rem,env(safe-area-inset-right,0px))}
+h2{font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.1;margin:.2rem 0 .4rem;font-weight:800;letter-spacing:-.015em}
+h3{font-size:1.15rem;margin:0 0 .35rem;font-weight:700}
+.lead{color:var(--muted);max-width:62ch;margin:.2rem 0 1.2rem}
+
+/* Teclado 3x3 */
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(.6rem,2vw,1.1rem);margin:1rem 0}
+.key{font:inherit;text-align:left;cursor:pointer;color:var(--ink);background:var(--key);border:2px solid var(--line);border-bottom:8px solid var(--key-edge);
+  border-radius:16px;padding:.8rem .9rem .9rem;min-height:9.5rem;display:flex;flex-direction:column;gap:.15rem;position:relative;
+  transition:transform .08s,border-bottom-width .08s}
+.key:hover{border-color:var(--ink)}
+.key:active{transform:translateY(5px);border-bottom-width:3px}
+.key .num{font-size:2.6rem;font-weight:800;line-height:1;letter-spacing:-.03em}
+.key .kt{font-weight:700;font-size:1.05rem;line-height:1.2;margin-top:auto}
+.key .ks{font-size:.85rem;color:var(--muted);line-height:1.25}
+.key .done{position:absolute;top:.6rem;right:.7rem;font-size:.8rem;font-weight:700;color:var(--ok);display:flex;align-items:center;gap:.25rem}
+.key.is-done{border-color:var(--ok)}
+@media (max-width:560px){
+  .key{min-height:7.5rem;padding:.6rem .6rem .7rem}
+  .key .num{font-size:1.9rem}
+  .key .kt{font-size:.92rem}
+  .key .ks{display:none}
+}
+.legend-row{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;color:var(--muted);font-size:.92rem;margin-top:.4rem}
+.home-foot{display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;justify-content:space-between;margin-top:1.2rem}
+
+/* Vista de tema */
+.topic-head{margin-bottom:.8rem}
+.back{display:inline-flex;align-items:center;gap:.3rem;font-weight:600;text-decoration:none;color:var(--muted);margin-bottom:.4rem;padding:.2rem 0}
+.back:hover{color:var(--ink)}
+.numtag{display:inline-grid;place-items:center;width:1.9em;height:1.9em;background:var(--ink);color:var(--bg);border-radius:.45em;font-size:.7em;margin-right:.45rem;vertical-align:.12em}
+.tabs{display:flex;gap:.45rem;flex-wrap:wrap;margin:.6rem 0 1.1rem}
+.tab{font-weight:700;text-decoration:none;padding:.5rem 1rem;border-radius:10px;background:var(--key);border:2px solid var(--line);border-bottom:5px solid var(--key-edge);min-height:2.6rem;display:inline-flex;align-items:center}
+.tab[aria-current="page"]{background:var(--ink);color:var(--bg);border-color:var(--ink);border-bottom-color:var(--ink)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:clamp(1rem,3vw,1.6rem)}
+
+.learn{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.2rem}
+.learn article{border-left:5px solid var(--accent);padding:.1rem 0 .1rem .9rem}
+.learn p{margin:0;color:var(--ink)}
+.key-idea{margin:1.4rem 0 .6rem;padding:1rem 1.2rem;background:var(--ink);color:var(--bg);border-radius:12px;font-size:1.15rem;font-weight:600;line-height:1.35}
+details.pitch{margin-top:1rem;border:1px dashed var(--muted);border-radius:12px;padding:.6rem .9rem}
+details.pitch summary{cursor:pointer;font-weight:700}
+details.pitch p{margin:.5rem 0 0;color:var(--muted)}
+.fine{font-size:.85rem;color:var(--muted)}
+
+/* Simuladores */
+.sim{display:grid;grid-template-columns:minmax(250px,340px) 1fr;gap:1.4rem;align-items:start}
+@media (max-width:820px){.sim{grid-template-columns:1fr}}
+.controls{display:flex;flex-direction:column;gap:1rem}
+.field label{display:block;font-weight:600;font-size:.92rem;margin-bottom:.2rem}
+.frow{display:flex;gap:.6rem;align-items:center}
+.frow input[type=range]{flex:1;min-width:0;accent-color:var(--accent);height:1.6rem}
+.frow input[type=number]{width:6.2rem;font:inherit;font-family:var(--mono);font-weight:600;padding:.3rem .4rem;border:2px solid var(--line);border-radius:8px;background:var(--key);color:var(--ink)}
+.unit{font-size:.82rem;color:var(--muted);min-width:2.2rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin-bottom:1rem}
+.stat{background:var(--key);border:1px solid var(--line);border-radius:12px;padding:.6rem .8rem}
+.stat span{display:block;font-size:.82rem;color:var(--muted);line-height:1.25}
+.stat b{display:block;font-size:1.4rem;font-weight:800;letter-spacing:-.01em;line-height:1.25;overflow-wrap:anywhere}
+.note{margin:.8rem 0;padding:.7rem 1rem;border-left:5px solid var(--ok);background:var(--key);border-radius:0 10px 10px 0}
+.note.warn{border-left-color:var(--warn)}
+.note.bad{border-left-color:var(--bad)}
+.chart{overflow-x:auto;background:var(--key);border:1px solid var(--line);border-radius:12px;padding:.5rem}
+.chart svg{display:block;width:100%;min-width:480px;height:auto}
+.chart text{font-family:var(--font);fill:var(--muted);font-size:13px}
+.leg{display:flex;flex-wrap:wrap;gap:.3rem 1rem;margin:.5rem 0 0;font-size:.85rem;color:var(--muted)}
+.leg i{display:inline-block;width:.9rem;height:.9rem;border-radius:3px;vertical-align:-.12rem;margin-right:.3rem}
+.sep{border:0;border-top:1px solid var(--line);margin:1.4rem 0}
+table.t{border-collapse:collapse;width:100%;font-size:.92rem}
+table.t th,table.t td{text-align:right;padding:.35rem .5rem;border-bottom:1px solid var(--line)}
+table.t th:first-child,table.t td:first-child{text-align:left}
+.tbl-wrap{overflow-x:auto}
+
+/* Lista de propina */
+.items{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.5rem}
+.item{font:inherit;text-align:left;cursor:pointer;background:var(--key);color:var(--ink);border:2px solid var(--line);border-bottom:4px solid var(--key-edge);border-radius:10px;padding:.5rem .7rem;display:flex;flex-direction:column;min-height:3.6rem}
+.item[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.item small{opacity:.8}
+.item:active{transform:translateY(2px);border-bottom-width:2px}
+.split{display:flex;height:1.6rem;border-radius:8px;overflow:hidden;background:var(--key);border:1px solid var(--line);margin:.5rem 0}
+.split i{display:block;height:100%;transition:width .2s}
+
+/* Celular de fraudes */
+.phone{max-width:420px;margin:0 auto;background:var(--key);border:3px solid var(--ink);border-radius:26px;padding:1rem 1rem 1.1rem}
+.bubble-from{font-size:.8rem;color:var(--muted);margin-bottom:.3rem;font-weight:600}
+.bubble{background:var(--panel);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:.7rem .9rem;font-size:1.02rem}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-top:.9rem}
+.progress{height:.45rem;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:.8rem}
+.progress i{display:block;height:100%;background:var(--accent);transition:width .25s}
+
+/* Quiz */
+.quiz{max-width:640px}
+.opts{display:grid;gap:.5rem;margin:.8rem 0}
+.opt{font:inherit;text-align:left;cursor:pointer;background:var(--key);color:var(--ink);border:2px solid var(--line);border-bottom:4px solid var(--key-edge);border-radius:10px;padding:.6rem .9rem;min-height:2.8rem}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--ok);background:var(--key)}
+.opt.wrong{border-color:var(--bad)}
+.opt .mark{font-weight:800;margin-right:.4rem}
+
+/* Apps reales */
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+.app{background:var(--key);border:1px solid var(--line);border-radius:14px;padding:1rem;display:flex;flex-direction:column;gap:.5rem}
+.app .kind{font-size:.8rem;font-weight:700;color:var(--ok)}
+.app .url{font-size:.8rem;color:var(--muted);font-family:var(--mono);overflow-wrap:anywhere}
+.app .row{display:flex;gap:.5rem;margin-top:auto;flex-wrap:wrap}
+
+dialog{border:3px solid var(--ink);border-radius:18px;background:var(--panel);color:var(--ink);padding:1.2rem;max-width:min(92vw,420px)}
+dialog::backdrop{background:rgba(5,10,20,.65)}
+.qrbox{background:#fff;padding:.7rem;border-radius:10px;width:min(76vw,300px);margin:.6rem auto}
+.qrbox svg{display:block;width:100%;height:auto}
+footer{max-width:1040px;margin:0 auto;padding:0 max(1rem,env(safe-area-inset-left,0px)) 2rem;color:var(--muted);font-size:.85rem}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <h1>Finanzas escolares</h1>
+    <p>Aprende, simula y abre apps reales</p>
+  </div>
+  <div class="lcd" role="status" aria-live="polite">
+    <div class="lcd-label" id="lcdLabel">Listo</div>
+    <div class="lcd-value" id="lcdValue">S/ 0.00</div>
+  </div>
+  <div class="tools">
+    <button class="btn" id="btnBig" aria-pressed="false" title="Aumenta el tamaño del texto para verlo de lejos">Texto grande</button>
+    <button class="btn" id="btnKiosk" aria-pressed="false" title="Vuelve al teclado tras 90 segundos sin tocar la pantalla">Modo stand</button>
+  </div>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer>
+  Las simulaciones son referenciales y educativas; no son asesoría financiera. Verifica tasas, comisiones y condiciones directamente en cada entidad.
+</footer>
+
+<dialog id="qr" aria-labelledby="qrTitle">
+  <h3 id="qrTitle">Escanea para abrir</h3>
+  <div class="qrbox" id="qrBox"></div>
+  <p class="fine" id="qrUrl" style="overflow-wrap:anywhere;text-align:center"></p>
+  <div style="text-align:center"><button class="btn" id="qrClose">Cerrar</button></div>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ---------- utilidades ---------- */
+const $ = (s, el) => (el || document).querySelector(s);
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+const nf2 = new Intl.NumberFormat('es-PE', {minimumFractionDigits:2, maximumFractionDigits:2});
+const nf0 = new Intl.NumberFormat('es-PE', {maximumFractionDigits:0});
+const nf1 = new Intl.NumberFormat('es-PE', {maximumFractionDigits:1});
+const money = n => 'S/ ' + nf2.format(n);
+const money0 = n => 'S/ ' + nf0.format(n);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const clampN = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const monthly = tea => Math.pow(1 + tea/100, 1/12) - 1;
+
+const lcdL = $('#lcdLabel'), lcdV = $('#lcdValue');
+function lcd(label, value){ lcdL.textContent = label; lcdV.textContent = value; }
+
+/* ---------- campos numéricos (deslizador + número) ---------- */
+function field(k, label, val, min, max, step, unit){
+  return `<div class="field"><label for="n-${k}">${label}</label>
+  <div class="frow">
+    <input type="range" data-k="${k}" min="${min}" max="${max}" step="${step}" value="${val}" aria-label="${label}">
+    <input type="number" id="n-${k}" data-k="${k}" min="${min}" step="${step}" value="${val}" inputmode="decimal">
+    <span class="unit">${unit || ''}</span>
+  </div></div>`;
+}
+function vals(root){
+  const o = {};
+  root.querySelectorAll('input[type=number][data-k]').forEach(el => {
+    const v = parseFloat(el.value);
+    o[el.dataset.k] = isNaN(v) ? 0 : v;
+  });
+  return o;
+}
+function bindFields(root, cb){
+  root.addEventListener('input', e => {
+    const k = e.target.dataset && e.target.dataset.k;
+    if(!k) return;
+    root.querySelectorAll('[data-k="' + k + '"]').forEach(el => { if(el !== e.target) el.value = e.target.value; });
+    cb(vals(root));
+  });
+  cb(vals(root));
+}
+function setField(root, k, v){
+  root.querySelectorAll('[data-k="' + k + '"]').forEach(el => { el.value = v; });
+}
+
+/* ---------- gráficos SVG ---------- */
+function niceMax(v){
+  if(v <= 0) return 1;
+  const p = Math.pow(10, Math.floor(Math.log10(v)));
+  const f = v / p;
+  const n = f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10;
+  return n * p;
+}
+function axisY(yMax, pad, W, H, yFmt){
+  let s = '';
+  for(let i = 0; i <= 4; i++){
+    const v = yMax * i / 4;
+    const y = H - pad.b - (H - pad.t - pad.b) * i / 4;
+    s += `<line x1="${pad.l}" x2="${W - pad.r}" y1="${y}" y2="${y}" stroke="var(--grid)" stroke-width="1"/>`;
+    s += `<text x="${pad.l - 8}" y="${y + 4}" text-anchor="end">${yFmt(v)}</text>`;
+  }
+  return s;
+}
+function lineChart(series, opt){
+  opt = opt || {};
+  const W = 560, H = opt.h || 280, pad = {l:68, r:18, t:14, b:36};
+  const xFmt = opt.xFmt || (x => x), yFmt = opt.yFmt || money0;
+  const xs = series.flatMap(s => s.pts.map(p => p[0]));
+  const ys = series.flatMap(s => s.pts.map(p => p[1]));
+  const x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs) || 1;
+  const yMax = niceMax(Math.max.apply(null, ys));
+  const px = x => pad.l + (W - pad.l - pad.r) * ((x - x0) / ((x1 - x0) || 1));
+  const py = y => H - pad.b - (H - pad.t - pad.b) * (y / yMax);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opt.label || 'Gráfico')}">`;
+  s += axisY(yMax, pad, W, H, yFmt);
+  for(let i = 0; i <= 4; i++){
+    const xv = x0 + (x1 - x0) * i / 4;
+    s += `<text x="${px(xv)}" y="${H - 12}" text-anchor="middle">${xFmt(xv)}</text>`;
+  }
+  series.forEach(sr => {
+    const d = sr.pts.map((p, i) => (i ? 'L' : 'M') + px(p[0]).toFixed(1) + ' ' + py(p[1]).toFixed(1)).join(' ');
+    s += `<path d="${d}" fill="none" stroke="${sr.color}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"${sr.dash ? ' stroke-dasharray="7 6"' : ''}/>`;
+    const last = sr.pts[sr.pts.length - 1];
+    s += `<circle cx="${px(last[0]).toFixed(1)}" cy="${py(last[1]).toFixed(1)}" r="4.5" fill="${sr.color}"/>`;
+  });
+  if(opt.xMark != null && opt.xMark >= x0 && opt.xMark <= x1){
+    s += `<line x1="${px(opt.xMark)}" x2="${px(opt.xMark)}" y1="${pad.t}" y2="${H - pad.b}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="3 4"/>`;
+    s += `<text x="${px(opt.xMark) + 6}" y="${pad.t + 12}">${esc(opt.xMarkLabel || '')}</text>`;
+  }
+  s += '</svg>';
+  return `<div class="chart">${s}</div>` + legend(series.map(x => [x.color, x.name]));
+}
+function legend(items){
+  return '<div class="leg">' + items.map(i => `<span><i style="background:${i[0]}"></i>${esc(i[1])}</span>`).join('') + '</div>';
+}
+function stackBars(rows, colors, names, label){
+  const W = 560, H = 260, pad = {l:68, r:14, t:14, b:30};
+  const tot = rows.map(r => r.parts.reduce((a, b) => a + b, 0));
+  const yMax = niceMax(Math.max.apply(null, tot));
+  const bw = (W - pad.l - pad.r) / rows.length;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}">` + axisY(yMax, pad, W, H, money0);
+  rows.forEach((r, i) => {
+    let acc = 0;
+    r.parts.forEach((v, j) => {
+      const h = (H - pad.t - pad.b) * (v / yMax);
+      const y = H - pad.b - (H - pad.t - pad.b) * ((acc + v) / yMax);
+      s += `<rect x="${(pad.l + i * bw + bw * .12).toFixed(1)}" y="${y.toFixed(1)}" width="${(bw * .76).toFixed(1)}" height="${Math.max(0, h).toFixed(1)}" fill="${colors[j]}"/>`;
+      acc += v;
+    });
+    const every = Math.ceil(rows.length / 8);
+    if(i % every === 0 || i === rows.length - 1) s += `<text x="${(pad.l + i * bw + bw / 2).toFixed(1)}" y="${H - 10}" text-anchor="middle">${r.label}</text>`;
+  });
+  s += '</svg>';
+  return `<div class="chart">${s}</div>` + legend(colors.map((c, i) => [c, names[i]]));
+}
+function barChart(items, label){
+  const W = 560, H = 270, pad = {l:84, r:14, t:14, b:46};
+  const yMax = niceMax(Math.max.apply(null, items.map(i => i.value)));
+  const bw = (W - pad.l - pad.r) / items.length;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}">` + axisY(yMax, pad, W, H, money0);
+  items.forEach((it, i) => {
+    const h = (H - pad.t - pad.b) * (it.value / yMax);
+    const x = pad.l + i * bw + bw * .2, w = bw * .6;
+    s += `<rect x="${x.toFixed(1)}" y="${(H - pad.b - h).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${it.color}" rx="4"/>`;
+    s += `<text x="${(x + w / 2).toFixed(1)}" y="${(H - pad.b - h - 6).toFixed(1)}" text-anchor="middle" style="fill:var(--ink);font-weight:700">${money0(it.value)}</text>`;
+    s += `<text x="${(x + w / 2).toFixed(1)}" y="${H - 22}" text-anchor="middle">${esc(it.label)}</text>`;
+    if(it.sub) s += `<text x="${(x + w / 2).toFixed(1)}" y="${H - 7}" text-anchor="middle">${esc(it.sub)}</text>`;
+  });
+  s += '</svg>';
+  return `<div class="chart">${s}</div>`;
+}
+function donut(parts, centerTop, centerBottom){
+  const r = 70, C = 2 * Math.PI * r;
+  const total = parts.reduce((a, p) => a + Math.max(0, p.value), 0) || 1;
+  let off = 0, s = `<svg viewBox="0 0 200 200" role="img" aria-label="Distribución del presupuesto" style="width:100%;max-width:240px;margin:0 auto;display:block">`;
+  s += `<circle cx="100" cy="100" r="${r}" fill="none" stroke="var(--grid)" stroke-width="28"/>`;
+  parts.forEach(p => {
+    const len = C * Math.max(0, p.value) / total;
+    if(len <= 0) return;
+    s += `<circle cx="100" cy="100" r="${r}" fill="none" stroke="${p.color}" stroke-width="28" stroke-dasharray="${len.toFixed(2)} ${(C - len).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 100 100)"/>`;
+    off += len;
+  });
+  s += `<text x="100" y="98" text-anchor="middle" style="fill:var(--ink);font-size:17px;font-weight:800">${centerTop}</text>`;
+  s += `<text x="100" y="117" text-anchor="middle" style="font-size:11px">${centerBottom}</text></svg>`;
+  return s;
+}
+
+/* ================================================================
+   LOS 9 TEMAS
+   ================================================================ */
+const APP_SBS = {name:'SBS: Compara tasas y reporte de deudas', kind:'Entidad pública', url:'https://www.sbs.gob.pe',
+  desc:'Portal de la Superintendencia de Banca, Seguros y AFP. En «Compara tasas» ves tasas de ahorro y crédito de distintas entidades, y puedes pedir tu reporte de deudas sin costo.'};
+const APP_SBS_EDU = {name:'SBS: Educación financiera', kind:'Entidad pública', url:'https://www.sbs.gob.pe/educacion-financiera',
+  desc:'Programas y materiales para jóvenes y docentes: historietas, cartillas, videos y podcast, incluido el programa «Finanzas en el cole».'};
+
+const TOPICS = [
+/* 1 ------------------------------------------------------------ */
+{ id:1, title:'Necesidades y deseos', sub:'¿En qué gasto mi propina?',
+  learn:[
+   {h:'Necesidad', p:'Lo que hace falta para vivir y estudiar: comida, transporte, útiles, salud.'},
+   {h:'Deseo', p:'Lo que mejora tu día pero puede esperar: un antojo, una skin, una salida.'},
+   {h:'Costo de oportunidad', p:'Cada sol gastado deja de servir para otra cosa. Elegir una cosa es renunciar a otra.'}],
+  idea:'Antes de gastar, pregúntate: ¿lo necesito hoy o lo quiero hoy?',
+  pitch:'Pregunta al visitante qué compraría con S/ 50. Luego déjalo armar su semana en el simulador y comenta a qué renunció para llegar a fin de semana.',
+  quiz:[
+   {q:'¿Cuál de estas opciones es una necesidad para un estudiante?', o:['El pasaje para llegar al colegio','Una skin de videojuego','Una entrada al cine','Zapatillas de edición limitada'], a:0, why:'Sin transporte no puedes cumplir una actividad básica: estudiar.'},
+   {q:'Recibes S/ 50 por semana. ¿Qué hábito ayuda más a llegar al domingo con dinero?', o:['Gastar primero y ver qué sobra','Separar primero lo necesario y una parte para ahorrar','Pedir prestado a un amigo','No anotar nada porque son montos pequeños'], a:1, why:'Decidir el destino del dinero antes de gastarlo evita que los antojos se lo lleven todo.'},
+   {q:'¿Qué es el costo de oportunidad de gastar S/ 20 en un deseo?', o:['Nada, porque ya lo gasté','Lo que podías haber hecho con esos S/ 20','El precio del producto','El impuesto que pagas'], a:1, why:'Es lo que sacrificas: ahorrarlos o usarlos en otra cosa.'}],
+  apps:[APP_SBS_EDU,
+   {name:'Khan Academy: Economía y finanzas', kind:'Sitio web', url:'https://es.khanacademy.org/economics-finance-domain', desc:'Lecciones gratuitas en español sobre decisiones económicas y finanzas personales.'}],
+  sim: simDinero },
+/* 2 ------------------------------------------------------------ */
+{ id:2, title:'Ingresos y emprendimiento', sub:'Ganar dinero con tu esfuerzo',
+  learn:[
+   {h:'Fuentes de ingreso', p:'Sueldo, propinas, trabajos independientes, negocios. Trabajo formal significa contrato y beneficios; informal, sin ese respaldo.'},
+   {h:'Margen', p:'Lo que queda de cada venta tras pagar lo que costó producirla: precio menos costo unitario.'},
+   {h:'Punto de equilibrio', p:'La cantidad que debes vender para cubrir tus costos fijos. Desde ahí empiezas a ganar.'}],
+  idea:'Un negocio no gana cuando vende: gana cuando vende más que su punto de equilibrio.',
+  pitch:'Usa un ejemplo cercano, como vender galletas en el recreo. Sube el costo fijo y muestra cómo se desplaza el punto de equilibrio.',
+  quiz:[
+   {q:'Vendes galletas a S/ 3 y cada una te cuesta S/ 1 producirla. ¿Cuál es tu margen por unidad?', o:['S/ 1','S/ 2','S/ 3','S/ 4'], a:1, why:'Margen = precio − costo unitario = 3 − 1 = S/ 2.'},
+   {q:'El punto de equilibrio es…', o:['La cantidad de ventas en la que no ganas ni pierdes','El precio más alto posible','Lo que ganas en un buen día','El número de clientes que tienes'], a:0, why:'Por debajo pierdes; por encima ganas.'},
+   {q:'Si suben tus costos fijos y nada más cambia, el punto de equilibrio…', o:['Baja','Sube','Se mantiene igual','Desaparece'], a:1, why:'Hay más costos que cubrir, así que necesitas vender más unidades.'}],
+  apps:[
+   {name:'SUNAT', kind:'Entidad pública', url:'https://www.sunat.gob.pe', desc:'Aquí se tramita el RUC y se consultan las obligaciones tributarias para formalizar un negocio.'},
+   {name:'Ministerio de la Producción', kind:'Entidad pública', url:'https://www.gob.pe/produce', desc:'Información y programas de apoyo para micro y pequeñas empresas.'},
+   {name:'Hojas de cálculo de Google', kind:'Sitio web', url:'https://www.google.com/sheets/about/', desc:'Lleva el registro de tus ventas y costos para calcular tu margen y tu equilibrio.'}],
+  sim: simNegocio },
+/* 3 ------------------------------------------------------------ */
+{ id:3, title:'Presupuesto personal', sub:'Un plan para cada sol',
+  learn:[
+   {h:'Ingresos menos gastos', p:'Un presupuesto anota lo que entra y lo que sale en un periodo, antes de que ocurra.'},
+   {h:'Regla 50/30/20', p:'50 % necesidades, 30 % deseos, 20 % ahorro. Es un punto de partida, no una ley: ajústala a tu realidad.'},
+   {h:'Gastos hormiga', p:'Gastos pequeños y frecuentes que casi no notas, pero que en un mes suman más que un deseo grande.'}],
+  idea:'Si no le das un destino a tu dinero, se lo da el día a día.',
+  pitch:'Pide al visitante un ingreso aproximado y mueve los deslizadores juntos hasta que «sin asignar» llegue a cero.',
+  quiz:[
+   {q:'En la regla 50/30/20, ¿qué porcentaje se destina al ahorro?', o:['50 %','30 %','20 %','10 %'], a:2, why:'50 % necesidades, 30 % deseos y 20 % ahorro (o pago de deudas).'},
+   {q:'¿Qué es un gasto hormiga?', o:['Un gasto grande y planificado','Un gasto pequeño y frecuente que casi no se nota','El gasto en la matrícula','Un gasto que se hace una vez al año'], a:1, why:'Un café, un caramelo o una recarga diaria parecen poco, pero suman.'},
+   {q:'Después de anotar tus ingresos, el siguiente paso es…', o:['Anotar y planificar tus gastos del periodo','Comprar lo que quieras','Pedir un préstamo','Cerrar la cuenta bancaria'], a:0, why:'Sin comparar ingresos y gastos no sabes cuánto puedes ahorrar.'}],
+  apps:[
+   {name:'Hojas de cálculo de Google', kind:'Sitio web', url:'https://www.google.com/sheets/about/', desc:'Crea tu propia tabla de ingresos y gastos y compártela con tu familia.'},
+   {name:'Microsoft Excel', kind:'Sitio web', url:'https://www.microsoft.com/es-es/microsoft-365/excel', desc:'La hoja de cálculo más usada; sirve para armar presupuestos con fórmulas.'},
+   {name:'Wallet by BudgetBakers', kind:'App móvil', url:'https://budgetbakers.com', desc:'App de control de gastos y presupuestos por categorías.'},
+   {name:'Goodbudget', kind:'App móvil', url:'https://goodbudget.com', desc:'App de presupuesto por «sobres» virtuales: asignas dinero a cada categoría.'}],
+  sim: simPresupuesto },
+/* 4 ------------------------------------------------------------ */
+{ id:4, title:'Ahorro y metas', sub:'De querer algo a tenerlo',
+  learn:[
+   {h:'Meta SMART', p:'Específica, medible y con plazo: «S/ 800 para una laptop en 8 meses» es mejor que «ahorrar mucho».'},
+   {h:'Págate primero', p:'Separa tu ahorro apenas recibas dinero, no con lo que sobre al final del mes.'},
+   {h:'Dónde guardarlo', p:'En entidades supervisadas por la SBS: ganan interés y los depósitos cuentan con la protección del Fondo de Seguro de Depósitos hasta un monto máximo.'}],
+  idea:'Ahorrar no es gastar menos: es decidir primero qué quieres lograr.',
+  pitch:'Elige con el visitante algo que quiera (un celular, una bici) y mira en cuántos meses llega ahorrando poco a poco.',
+  quiz:[
+   {q:'¿Cuál es una meta de ahorro bien planteada?', o:['«Quiero tener plata algún día»','«Ahorraré S/ 100 al mes durante 8 meses para una laptop de S/ 800»','«Ahorraré mucho»','«Compraré cosas bonitas»'], a:1, why:'Tiene monto, plazo y objetivo claros.'},
+   {q:'«Págate primero» significa…', o:['Separar tu ahorro apenas recibes dinero','Gastar todo y ahorrar lo que sobre','Prestarte dinero','Comprarte un regalo cada semana'], a:0, why:'Lo que sobra casi nunca alcanza; lo que se separa antes, sí.'},
+   {q:'¿Dónde es más recomendable guardar tus ahorros?', o:['Debajo del colchón','En una cuenta de una entidad supervisada por la SBS','En un préstamo informal a un amigo','En una app sin registro'], a:1, why:'Ahí están más protegidos y además pueden ganar interés.'}],
+  apps:[APP_SBS,
+   {name:'Banco de la Nación', kind:'Entidad pública', url:'https://www.bn.com.pe', desc:'Banco estatal con cuentas de ahorro; revisa requisitos y comisiones antes de abrir una.'},
+   {name:'Caja Arequipa', kind:'Entidad financiera', url:'https://www.cajaarequipa.pe', desc:'Caja municipal con presencia en Arequipa; compara sus tasas de ahorro con otras.'}],
+  sim: simAhorro },
+/* 5 ------------------------------------------------------------ */
+{ id:5, title:'Interés compuesto', sub:'El tiempo trabaja por ti',
+  learn:[
+   {h:'Simple vs. compuesto', p:'En el interés compuesto ganas intereses también sobre los intereses anteriores.'},
+   {h:'Regla del 72', p:'Divide 72 entre la tasa anual: te dice en cuántos años se duplica tu dinero.'},
+   {h:'Tiempo antes que monto', p:'Empezar antes pesa más que aportar más después. Ojo: los rendimientos reales no están garantizados.'}],
+  idea:'El interés compuesto premia al que empieza temprano y no retira.',
+  pitch:'Deja la tasa fija y mueve solo los años: el visitante verá que la curva se despega al final.',
+  quiz:[
+   {q:'El interés compuesto es…', o:['Interés solo sobre el capital inicial','Interés sobre el capital y también sobre los intereses ya ganados','Un tipo de impuesto','Un descuento en tiendas'], a:1, why:'Por eso el crecimiento se acelera con el tiempo.'},
+   {q:'Con la regla del 72, una tasa de 6 % anual duplica el dinero en aproximadamente…', o:['6 años','12 años','36 años','72 años'], a:1, why:'72 ÷ 6 = 12 años.'},
+   {q:'¿Qué ayuda más al crecimiento a largo plazo?', o:['Empezar temprano, aunque sea con montos pequeños','Esperar a tener mucho dinero','Retirar los intereses cada mes','Cambiar de cuenta todos los días'], a:0, why:'El tiempo es el ingrediente más poderoso del interés compuesto.'}],
+  apps:[
+   {name:'Calculadora de interés compuesto (Investor.gov)', kind:'Sitio web', url:'https://www.investor.gov/financial-tools-calculators/calculators/compound-interest-calculator', desc:'Calculadora de la autoridad de valores de EE. UU. (en inglés) para comparar escenarios.'},
+   {name:'Superintendencia del Mercado de Valores (SMV)', kind:'Entidad pública', url:'https://www.smv.gob.pe', desc:'Regula el mercado de valores en el Perú; revisa aquí antes de invertir.'},
+   {name:'Bolsa de Valores de Lima', kind:'Sitio web', url:'https://www.bvl.com.pe', desc:'Mira cómo se negocian acciones y bonos; incluye material educativo.'}],
+  sim: simInteres },
+/* 6 ------------------------------------------------------------ */
+{ id:6, title:'Crédito y deudas', sub:'El dinero también tiene precio',
+  learn:[
+   {h:'Interés', p:'Lo que pagas por usar dinero ajeno. Más plazo baja la cuota, pero sube el total que devuelves.'},
+   {h:'TEA y TCEA', p:'La TEA es la tasa anual del préstamo; la TCEA suma comisiones y gastos y refleja el costo total. Para comparar, usa la TCEA.'},
+   {h:'Historial crediticio', p:'Pagar a tiempo construye tu historial. En la SBS puedes consultar tu reporte de deudas sin costo.'}],
+  idea:'Antes de pedir un crédito, mira el total que vas a devolver, no solo la cuota.',
+  pitch:'Simula el mismo monto a 6 y a 24 meses: la cuota baja, pero mira cuánto sube lo que pagas en intereses.',
+  quiz:[
+   {q:'La TEA es…', o:['La Tasa de Entrada Anual','La Tasa Efectiva Anual: el costo del dinero en un año','Una tasa de ahorro mensual','Un tipo de seguro'], a:1, why:'Expresa el costo anual del crédito considerando que los intereses se capitalizan.'},
+   {q:'¿Qué tasa conviene mirar para comparar el costo total porque incluye comisiones y gastos?', o:['La TEA','La TCEA','La TEM','Ninguna'], a:1, why:'La TCEA (Tasa de Costo Efectivo Anual) incluye comisiones y gastos.'},
+   {q:'Una buena práctica antes de endeudarte es…', o:['Pedir el monto máximo que te den','Verificar que la cuota no te impida cubrir tus necesidades','Mirar solo el monto de la cuota','Aceptar la primera oferta'], a:1, why:'Una deuda debe caber en tu presupuesto sin sacrificar lo básico.'}],
+  apps:[APP_SBS,
+   {name:'INDECOPI', kind:'Entidad pública', url:'https://www.indecopi.gob.pe', desc:'Protege al consumidor: aquí puedes informarte sobre derechos y presentar reclamos.'}],
+  sim: simCredito },
+/* 7 ------------------------------------------------------------ */
+{ id:7, title:'Inflación y poder de compra', sub:'Por qué S/ 10 hoy no son S/ 10 mañana',
+  learn:[
+   {h:'Qué es', p:'Un aumento general y sostenido de los precios. El mismo billete compra menos con el tiempo.'},
+   {h:'Poder de compra', p:'Lo que realmente puedes comprar con tu dinero. Si tu dinero crece menos que los precios, pierdes.'},
+   {h:'Cómo se mide', p:'Con el Índice de Precios al Consumidor (IPC), que sigue los precios de una canasta de productos.'}],
+  idea:'Guardar dinero sin que crezca es perder poder de compra despacito.',
+  pitch:'Pregunta cuánto costaba un pasaje o un menú hace diez años y compáralo con hoy; luego abre el simulador.',
+  quiz:[
+   {q:'Si hay inflación y tu dinero no crece, dentro de un año podrás comprar…', o:['Más que hoy','Menos que hoy','Exactamente lo mismo','Depende del color del billete'], a:1, why:'Los precios suben, pero tu dinero sigue igual: compra menos.'},
+   {q:'Si la inflación es 4 % anual y tu cuenta rinde 2 %, tu dinero en términos reales…', o:['Gana poder de compra','Pierde poder de compra','Queda exactamente igual','Se duplica'], a:1, why:'Crece menos que los precios.'},
+   {q:'¿Qué mide el IPC?', o:['La variación de los precios de una canasta de bienes y servicios','El tipo de cambio','Las tasas de interés','Los sueldos'], a:0, why:'Es la medida más usada de la inflación.'}],
+  apps:[
+   {name:'Banco Central de Reserva del Perú (BCRP)', kind:'Entidad pública', url:'https://www.bcrp.gob.pe', desc:'Publica series de inflación, tipo de cambio y tasas de referencia.'},
+   {name:'INEI', kind:'Entidad pública', url:'https://www.inei.gob.pe', desc:'Instituto Nacional de Estadística e Informática: estadísticas oficiales del país.'}],
+  sim: simInflacion },
+/* 8 ------------------------------------------------------------ */
+{ id:8, title:'Pagos digitales y fraudes', sub:'Yape, Plin y tarjetas sin sustos',
+  learn:[
+   {h:'Pagar sin efectivo', p:'Billeteras, QR, transferencias y tarjetas son cómodas, pero un pago ya ejecutado suele ser muy difícil de revertir.'},
+   {h:'Señales de estafa', p:'Urgencia, premios fáciles, enlaces desconocidos y pedidos de claves o códigos.'},
+   {h:'Reglas de oro', p:'Nunca compartas claves ni códigos SMS. Verifica los pagos en tu propia app. Entra siempre desde la app o la web oficial.'}],
+  idea:'Haz una pausa antes de actuar: ningún banco te pide tus claves por teléfono ni por mensaje.',
+  pitch:'Invita al visitante a jugar las siete situaciones y a decidir rápido; cierra con las tres reglas de oro.',
+  quiz:[
+   {q:'Alguien que dice ser del banco te pide el código que te llegó por SMS para «anular una compra». Debes…', o:['Dárselo rápido para evitar el cargo','Cortar y llamar tú al número oficial del banco','Pedirle su DNI','Enviarle una foto de tu tarjeta'], a:1, why:'Los códigos son personales. Los bancos no los piden por teléfono.'},
+   {q:'Vendes algo y el comprador te muestra una captura de que ya pagó. Lo correcto es…', o:['Confiar en la captura','Verificar el pago en tu propia app antes de entregar','Entregar y revisar mañana','Pedirle su clave'], a:1, why:'Una captura puede estar editada; solo tu app confirma el movimiento.'},
+   {q:'¿Cuál es una señal típica de estafa?', o:['Urgencia, premios fáciles y pedido de claves o códigos','Una alerta que aparece dentro de tu app oficial','Un estado de cuenta en tu app','Un recibo de pago con tu nombre'], a:0, why:'Los estafadores buscan que actúes sin pensar.'}],
+  apps:[
+   {name:'Yape', kind:'App móvil', url:'https://www.yape.com.pe', desc:'Billetera digital del BCP. Revisa su sección de seguridad y verifica siempre en tu app.'},
+   {name:'Plin', kind:'App móvil', url:'https://www.plin.pe', desc:'Transferencias entre bancos asociados usando el número de celular.'},
+   APP_SBS_EDU],
+  sim: simFraude },
+/* 9 ------------------------------------------------------------ */
+{ id:9, title:'Previsión y futuro', sub:'Cuidar al yo del futuro',
+  learn:[
+   {h:'Fondo de emergencia', p:'Ahorro para imprevistos. Suele recomendarse entre 3 y 6 meses de gastos esenciales.'},
+   {h:'Seguros', p:'Pagas una prima pequeña para que un imprevisto grande no destruya tus finanzas.'},
+   {h:'Pensión', p:'Al trabajar formalmente aportas a la ONP o a una AFP. Es tu base para la jubilación, y empezar pronto ayuda.'}],
+  idea:'Tu yo de 65 años depende de lo que empieces a hacer a los 18.',
+  pitch:'Muestra las tres barras: la diferencia entre empezar a los 18 y a los 28 suele sorprender.',
+  quiz:[
+   {q:'Un fondo de emergencia suele cubrir…', o:['Unas vacaciones','Entre 3 y 6 meses de gastos esenciales','Un año de lujos','Nada en particular'], a:1, why:'Sirve para perder el trabajo o enfrentar un gasto de salud sin endeudarte.'},
+   {q:'¿Por qué conviene empezar a aportar para la jubilación siendo joven?', o:['Porque el tiempo hace trabajar al interés compuesto','Porque la jubilación es a los 30','Porque los jóvenes pagan menos impuestos','No conviene'], a:0, why:'Más años de aportes significan más tiempo para que crezcan.'},
+   {q:'En el Perú, los trabajadores formales aportan para su pensión a…', o:['Solo a los bancos','Al sistema público (ONP) o al privado (AFP)','Solo a SUNAT','A ninguno'], a:1, why:'Son los dos sistemas previsionales: el Sistema Nacional de Pensiones y el Sistema Privado de Pensiones.'}],
+  apps:[APP_SBS,
+   {name:'ONP', kind:'Entidad pública', url:'https://www.onp.gob.pe', desc:'Oficina de Normalización Previsional: información del sistema público de pensiones.'}],
+  sim: simPrevision }
+];
+
+/* ================================================================
+   SIMULADORES
+   ================================================================ */
+
+/* 1 · Propina semanal */
+function simDinero(root){
+  const items = [
+    {id:'pasaje', n:'Pasajes de la semana', p:12, t:'N'},
+    {id:'menu',   n:'Menú del colegio (3 días)', p:15, t:'N'},
+    {id:'utiles', n:'Cuaderno y lapiceros', p:6, t:'N'},
+    {id:'snack',  n:'Gaseosa y snacks', p:8, t:'D'},
+    {id:'juego',  n:'Skin de videojuego', p:15, t:'D'},
+    {id:'cine',   n:'Entrada al cine', p:18, t:'D'},
+    {id:'datos',  n:'Recarga extra de datos', p:5, t:'D'},
+    {id:'meta',   n:'Alcancía para mi meta', p:10, t:'A'},
+    {id:'emerg',  n:'Fondo de emergencia', p:5, t:'A'}
+  ];
+  const tname = {N:'necesidad', D:'deseo', A:'ahorro'};
+  const sel = new Set();
+  root.innerHTML = `<div class="sim"><div class="controls">
+    ${field('prop', 'Tu propina de la semana', 50, 10, 200, 5, 'S/')}
+    <p class="fine">Toca los gastos que harías esta semana. Puedes quitarlos tocándolos otra vez.</p></div>
+    <div><div class="stats" id="st"></div><div class="split" id="sp" aria-hidden="true"></div><div id="msg"></div></div></div>
+    <h3 style="margin-top:1.2rem">Elige tus gastos</h3><div class="items" id="items"></div>`;
+  const box = $('#items', root);
+  box.innerHTML = items.map(i => `<button class="item" data-id="${i.id}" aria-pressed="false"><b>${i.n}</b><small>${money0(i.p)} · ${tname[i.t]}</small></button>`).join('');
+  function update(){
+    const allow = vals(root).prop;
+    const sum = {N:0, D:0, A:0};
+    items.forEach(i => { if(sel.has(i.id)) sum[i.t] += i.p; });
+    const spent = sum.N + sum.D + sum.A, rem = allow - spent;
+    $('#st', root).innerHTML = `<div class="stat"><span>Necesidades</span><b>${money0(sum.N)}</b></div>
+      <div class="stat"><span>Deseos</span><b>${money0(sum.D)}</b></div>
+      <div class="stat"><span>Ahorro</span><b>${money0(sum.A)}</b></div>
+      <div class="stat"><span>Te queda</span><b style="color:${rem < 0 ? 'var(--bad)' : 'var(--ok)'}">${money0(rem)}</b></div>`;
+    const base = Math.max(allow, spent) || 1;
+    $('#sp', root).innerHTML = `<i style="width:${sum.N / base * 100}%;background:var(--c4)"></i><i style="width:${sum.D / base * 100}%;background:var(--c3)"></i><i style="width:${sum.A / base * 100}%;background:var(--c2)"></i>`;
+    const allN = items.filter(i => i.t === 'N').every(i => sel.has(i.id));
+    let m, cls = '';
+    if(rem < 0){ m = `Te pasaste por ${money0(-rem)}. Quita primero un deseo, no una necesidad.`; cls = 'bad'; }
+    else if(!sel.size){ m = 'Aún no elegiste nada. Empieza por lo que necesitas sí o sí.'; cls = 'warn'; }
+    else if(!allN){ m = 'Todavía te faltan necesidades básicas por cubrir (pasajes, menú o útiles).'; cls = 'warn'; }
+    else if(!sum.A){ m = 'Cubriste lo necesario, pero no separaste nada para ahorrar. Págate primero.'; cls = 'warn'; }
+    else if(sum.D > allow * .4){ m = 'Tus deseos ya ocupan más del 40 % de tu propina. ¿Alguno puede esperar?'; cls = 'warn'; }
+    else { m = 'Buen equilibrio: necesidades cubiertas, algo de ahorro y deseos a medida.'; }
+    $('#msg', root).innerHTML = `<div class="note ${cls}">${m}</div>` + legend([['var(--c4)', 'Necesidades'], ['var(--c3)', 'Deseos'], ['var(--c2)', 'Ahorro']]);
+    lcd('Te queda esta semana', money(rem));
+  }
+  box.addEventListener('click', e => {
+    const b = e.target.closest('.item'); if(!b) return;
+    const id = b.dataset.id;
+    if(sel.has(id)) sel.delete(id); else sel.add(id);
+    b.setAttribute('aria-pressed', sel.has(id));
+    update();
+  });
+  bindFields(root, update);
+}
+
+/* 2 · Punto de equilibrio */
+function simNegocio(root){
+  root.innerHTML = `<div class="sim"><div class="controls">
+    ${field('precio', 'Precio de venta por unidad', 3.5, 0.5, 30, 0.1, 'S/')}
+    ${field('costo', 'Costo de producir una unidad', 1.5, 0, 30, 0.1, 'S/')}
+    ${field('fijos', 'Costos fijos del mes (alquiler, bolsas, etc.)', 120, 0, 2000, 10, 'S/')}
+    ${field('uni', 'Unidades vendidas en el mes', 150, 0, 1500, 5, 'und.')}</div>
+    <div><div class="stats" id="st"></div><div id="msg"></div><div id="ch"></div></div></div>`;
+  bindFields(root, v => {
+    const marg = v.precio - v.costo;
+    const be = marg > 0 ? v.fijos / marg : Infinity;
+    const util = v.uni * marg - v.fijos;
+    const ingr = v.uni * v.precio;
+    $('#st', root).innerHTML = `<div class="stat"><span>Margen por unidad</span><b>${money(marg)}</b></div>
+      <div class="stat"><span>Punto de equilibrio</span><b>${isFinite(be) ? nf0.format(Math.ceil(be)) + ' und.' : '—'}</b></div>
+      <div class="stat"><span>Ingresos del mes</span><b>${money0(ingr)}</b></div>
+      <div class="stat"><span>Utilidad del mes</span><b style="color:${util < 0 ? 'var(--bad)' : 'var(--ok)'}">${money0(util)}</b></div>`;
+    let m, cls = '';
+    if(marg <= 0){ m = 'Cada unidad te cuesta igual o más de lo que cobras. Sube el precio o baja el costo: vender más no lo arregla.'; cls = 'bad'; }
+    else if(v.uni < be){ m = `Te faltan ${nf0.format(Math.ceil(be - v.uni))} unidades para cubrir tus costos fijos.`; cls = 'warn'; }
+    else { m = `Ya cubres tus costos. Cada unidad extra te deja ${money(marg)}.`; }
+    $('#msg', root).innerHTML = `<div class="note ${cls}">${m}</div>`;
+    const xMax = Math.max(20, Math.ceil(Math.max(v.uni, isFinite(be) ? be : 0) * 1.4));
+    const pts = (f) => [0, xMax / 2, xMax].map(x => [x, f(x)]);
+    $('#ch', root).innerHTML = lineChart([
+      {name:'Ingresos', color:'var(--c2)', pts: pts(x => x * v.precio)},
+      {name:'Costos totales', color:'var(--c1)', pts: pts(x => v.fijos + x * v.costo)}
+    ], {xFmt: x => nf0.format(x) + ' und.', label:'Ingresos frente a costos totales según unidades vendidas', xMark: isFinite(be) ? be : null, xMarkLabel:'equilibrio'});
+    lcd('Utilidad del mes', money(util));
+  });
+}
+
+/* 3 · Presupuesto */
+function simPresupuesto(root){
+  root.innerHTML = `<div class="sim"><div class="controls">
+    ${field('ing', 'Ingreso del mes', 600, 0, 3000, 10, 'S/')}
+    ${field('nec', 'Necesidades', 300, 0, 3000, 10, 'S/')}
+    ${field('des', 'Deseos', 180, 0, 3000, 10, 'S/')}
+    ${field('aho', 'Ahorro', 120, 0, 3000, 10, 'S/')}
+    <button class="btn" id="apply">Aplicar regla 50/30/20</button></div>
+    <div><div style="display:grid;grid-template-columns:minmax(160px,240px) 1fr;gap:1rem;align-items:center" id="top"></div>
+    <div id="msg"></div></div></div>`;
+  const bf = bindFields;
+  $('#apply', root).addEventListener('click', () => {
+    const ing = vals(root).ing;
+    setField(root, 'nec', Math.round(ing * .5)); setField(root, 'des', Math.round(ing * .3)); setField(root, 'aho', Math.round(ing * .2));
+    root.querySelector('input[type=number][data-k="nec"]').dispatchEvent(new Event('input', {bubbles:true}));
+  });
+  bf(root, v => {
+    const used = v.nec + v.des + v.aho, free = v.ing - used;
+    const base = Math.max(v.ing, used) || 1;
+    const p = x => Math.round(x / (v.ing || 1) * 100);
+    $('#top', root).innerHTML = donut([
+      {value:v.nec, color:'var(--c4)'}, {value:v.des, color:'var(--c3)'}, {value:v.aho, color:'var(--c2)'}, {value:Math.max(0, free), color:'var(--grid)'}
+    ], free >= 0 ? money0(free) : '−' + money0(-free), free >= 0 ? 'sin asignar' : 'te pasas') +
+    `<div class="tbl-wrap"><table class="t"><thead><tr><th>Categoría</th><th>Tu plan</th><th>Meta</th></tr></thead><tbody>
+      <tr><td>Necesidades</td><td>${p(v.nec)} %</td><td>50 %</td></tr>
+      <tr><td>Deseos</td><td>${p(v.des)} %</td><td>30 %</td></tr>
+      <tr><td>Ahorro</td><td>${p(v.aho)} %</td><td>20 %</td></tr></tbody></table></div>`;
+    let m, cls = '';
+    if(free < 0){ m = `Asignas ${money0(-free)} más de lo que ingresas. Reduce deseos primero.`; cls = 'bad'; }
+    else if(p(v.aho) < 20){ m = 'Tu ahorro está por debajo del 20 %. Mira si algún deseo puede bajar un poco.'; cls = 'warn'; }
+    else if(free > 0){ m = `Te sobran ${money0(free)} sin asignar. Dales un destino: más ahorro o una meta.`; cls = 'warn'; }
+    else { m = 'Cada sol tiene destino y tu ahorro llega al 20 %. Así se ve un presupuesto equilibrado.'; }
+    $('#msg', root).innerHTML = `<div class="note ${cls}">${m}</div>` + legend([['var(--c4)', 'Necesidades'], ['var(--c3)', 'Deseos'], ['var(--c2)', 'Ahorro'], ['var(--grid)', 'Sin asignar']]);
+    lcd('Sin asignar', money(free));
+  });
+}
+
+/* 4 · Meta de ahorro */
+function simAhorro(root){
+  root.innerHTML = `<div class="sim"><div class="controls">
+    ${field('meta', 'Lo que quieres comprar', 1200, 50, 10000, 50, 'S/')}
+    ${field('act', 'Lo que ya tienes ahorrado', 150, 0, 10000, 50, 'S/')}
+    ${field('mes', 'Cuánto ahorras cada mes', 100, 0, 2000, 10, 'S/')}
+    ${field('tea', 'Rendimiento anual de tu cuenta', 3, 0, 15, 0.5, '%')}</div>
+    <div><div class="stats" id="st"></div><div id="msg"></div><div id="ch"></div></div></div>`;
+  const sim = (v, extra) => {
+    const i = monthly(v.tea), pts = [[0, v.act]];
+    let bal = v.act, n = 0;
+    while(bal < v.meta && n < 600){ bal = bal * (1 + i) + v.mes + extra; n++; if(n <= 120) pts.push([n, bal]); if(extra + v.mes <= 0 && i <= 0) break; }
+    return {n: bal >= v.meta ? n : null, pts};
+  };
+  bindFields(root, v => {
+    const base = sim(v, 0);
+    if(v.act >= v.meta){
+      $('#st', root).innerHTML = `<div class="stat"><span>Estado</span><b>¡Ya llegaste!</b></div>`;
+      $('#msg', root).innerHTML = '<div class="note">Ya tienes el dinero para tu meta. Define la siguiente.</div>'; $('#ch', root).innerHTML = '';
+      lcd('Meta', '¡Lograda!'); return;
+    }
+    const a = sim(v, 20), b = sim(v, 50);
+    let when = '—';
+    if(base.n){ const d = new Date(); d.setMonth(d.getMonth() + base.n); when = d.toLocaleDateString('es-PE', {month:'long', year:'numeric'}); }
+    $('#st', root).innerHTML = `<div class="stat"><span>Meses para tu meta</span><b>${base.n ? nf0.format(base.n) : '—'}</b></div>
+      <div class="stat"><span>Fecha estimada</span><b style="font-size:1.1rem">${when}</b></div>
+      <div class="stat"><span>Con S/ 20 más al mes</span><b>${a.n ? nf0.format(a.n) + ' meses' : '—'}</b></div>
+      <div class="stat"><span>Con S/ 50 más al mes</span><b>${b.n ? nf0.format(b.n) + ' meses' : '—'}</b></div>`;
+    $('#msg', root).innerHTML = base.n
+      ? `<div class="note">${a.n && a.n < base.n ? `Ahorrar S/ 20 más cada mes te acerca ${nf0.format(base.n - a.n)} ${base.n - a.n === 1 ? 'mes' : 'meses'}. ` : ''}Una meta con monto y plazo se cumple más fácil.</div>`
+      : '<div class="note bad">Con ese ahorro mensual no llegas a tu meta. Sube el ahorro o baja el monto.</div>';
+    const shown = base.pts.filter((p, idx) => idx < 121);
+    const xEnd = shown[shown.length - 1][0] || 1;
+    $('#ch', root).innerHTML = base.n ? lineChart([
+      {name:'Tu ahorro', color:'var(--c2)', pts: shown},
+      {name:'Tu meta', color:'var(--c1)', dash:true, pts:[[0, v.meta], [xEnd, v.meta]]}
+    ], {xFmt: x => nf0.format(x) + ' m', label:'Ahorro acumulado frente a la meta'}) : '';
+    lcd('Llegas a tu meta en', base.n ? nf0.format(base.n) + (base.n === 1 ? ' mes' : ' meses') : '—');
+  });
+}
+
+/* 5 · Interés compuesto */
+function simInteres(root){
+  root.innerHTML = `<div class="sim"><div class="controls">
+    ${field('ini', 'Dinero con el que empiezas', 500, 0, 10000, 50, 'S/')}
+    ${field('mes', 'Aporte mensual', 100, 0, 2000, 10, 'S/')}
+    ${field('tea', 'Rendimiento anual (ejemplo)', 8, 0, 20, 0.5, '%')}
+    ${field('yrs', 'Años', 10, 1, 40, 1, 'años')}
+    <p class="fine">Es un ejemplo con tasa fija. Los rendimientos reales varían y no están garantizados.</p></div>
+    <div><div class="stats" id="st"></div><div id="msg"></div><div id="ch"></div></div></div>`;
+  bindFields(root, v => {
+    const i = monthly(v.tea), yrs = Math.max(1, Math.round(v.yrs));
+    const a = [[0, v.ini]], b = [[0, v.ini]];
+    let bal = v.ini;
+    for(let m = 1; m <= yrs * 12; m++){
+      bal = bal * (1 + i) + v.mes;
+      if(m % 12 === 0){ a.push([m / 12, v.ini + v.mes * m]); b.push([m / 12, bal]); }
+    }
+    const dep = v.ini + v.mes * yrs * 12, gain = bal - dep;
+    $('#st', root).innerHTML = `<div class="stat"><span>Tendrías</span><b>${money0(bal)}</b></div>
+      <div class="stat"><span>Tú pusiste</span><b>${money0(dep)}</b></div>
+      <div class="stat"><span>Lo ganó el interés</span><b style="color:var(--ok)">${money0(gain)}</b></div>
+      <div class="stat"><span>Se duplica en (regla del 72)</span><b>${v.tea > 0 ? nf1.format(72 / v.tea) + ' años' : '—'}</b></div>`;
+    $('#msg', root).innerHTML = `<div class="note">${gain > 0 ? `De cada S/ 100 que tendrás, S/ ${nf0.format(gain / bal * 100)} los puso el interés compuesto, no tú.` : 'Sin rendimiento, el dinero solo se acumula. Prueba subir la tasa o los años.'}</div>`;
+    $('#ch', root).innerHTML = lineChart([
+      {name:'Con interés compuesto', color:'var(--c2)', pts:b},
+      {name:'Solo lo que depositas', color:'var(--c4)', dash:true, pts:a}
+    ], {xFmt: x => nf0.format(x) + ' a.', label:'Crecimiento del dinero con y sin interés'});
+    lcd('Tendrías en ' + yrs + (yrs === 1 ? ' año' : ' años'), money0(bal));
+  });
+}
+
+/* 6 · Crédito */
+function simCredito(root){
+  root.innerHTML = `<div class="sim"><div class="controls">
+    ${field('mon', 'Monto que pides', 2000, 100, 20000, 100, 'S/')}
+    ${field('tea', 'TEA del préstamo', 40, 5, 120, 1, '%')}
+    ${field('n', 'Plazo', 12, 3, 60, 1, 'meses')}
+    <p class="fine">Usa la TCEA de la entidad para el costo total real: incluye comisiones y gastos que aquí no se consideran.</p></div>
+    <div><div class="stats" id="st"></div><div id="msg"></div><div id="ch"></div><div id="tb"></div></div></div>`;
+  const quota = (P, tea, n) => { const i = monthly(tea); return P * i / (1 - Math.pow(1 + i, -n)); };
+  bindFields(root, v => {
+    const n = Math.max(1, Math.round(v.n)), i = monthly(v.tea), q = quota(v.mon, v.tea, n);
+    const total = q * n, int = total - v.mon;
+    $('#st', root).innerHTML = `<div class="stat"><span>Cuota mensual</span><b>${money(q)}</b></div>
+      <div class="stat"><span>Total que devuelves</span><b>${money0(total)}</b></div>
+      <div class="stat"><span>Solo en intereses</span><b style="color:var(--bad)">${money0(int)}</b></div>
+      <div class="stat"><span>Por cada S/ 100 pedidos pagas</span><b>${money0(total / v.mon * 100)}</b></div>`;
+    $('#msg', root).innerHTML = `<div class="note ${int > v.mon * .3 ? 'warn' : ''}">Pides ${money0(v.mon)} y devuelves ${money0(total)}. ${int > v.mon * .3 ? 'Los intereses pesan mucho: prueba un plazo menor o ahorra para pedir menos.' : 'El costo del interés es moderado; igual compara la TCEA entre entidades.'}</div>`;
+    const rows = []; let bal = v.mon;
+    for(let m = 1; m <= n; m++){ const it = bal * i, cap = q - it; rows.push({label:m, parts:[Math.max(0, it), Math.max(0, cap)]}); bal -= cap; }
+    $('#ch', root).innerHTML = '<h3 style="margin-top:.6rem">En cada cuota, ¿cuánto es interés?</h3>' +
+      stackBars(rows, ['var(--c1)', 'var(--c2)'], ['Interés', 'Capital (lo que pediste)'], 'Interés y capital en cada cuota');
+    $('#tb', root).innerHTML = '<h3 style="margin-top:1rem">Mismo monto, distinto plazo</h3><div class="tbl-wrap"><table class="t"><thead><tr><th>Plazo</th><th>Cuota</th><th>Intereses</th></tr></thead><tbody>' +
+      [6, 12, 24, 36].map(k => { const qq = quota(v.mon, v.tea, k); return `<tr><td>${k} meses</td><td>${money0(qq)}</td><td>${money0(qq * k - v.mon)}</td></tr>`; }).join('') + '</tbody></table></div>';
+    lcd('Cuota mensual', money(q));
+  });
+}
+
+/* 7 · Inflación */
+function simInflacion(root){
+  root.innerHTML = `<div class="sim"><div class="controls">
+    ${field('mon', 'Dinero que guardas hoy', 100, 10, 10000, 10, 'S/')}
+    ${field('inf', 'Inflación anual (ejemplo)', 4, 0, 20, 0.5, '%')}
+    ${field('yrs', 'Años', 10, 1, 30, 1, 'años')}
+    ${field('tea', 'Rendimiento anual de tu cuenta', 3, 0, 15, 0.5, '%')}</div>
+    <div><div class="stats" id="st"></div><div id="msg"></div><div id="ch"></div></div></div>`;
+  bindFields(root, v => {
+    const yrs = Math.max(1, Math.round(v.yrs));
+    const f = 1 + v.inf / 100;
+    const mat = [], acc = [];
+    for(let y = 0; y <= yrs; y++){
+      mat.push([y, v.mon / Math.pow(f, y)]);
+      acc.push([y, v.mon * Math.pow(1 + v.tea / 100, y) / Math.pow(f, y)]);
+    }
+    const realMat = mat[yrs][1], realAcc = acc[yrs][1];
+    const price = 10 * Math.pow(f, yrs);
+    $('#st', root).innerHTML = `<div class="stat"><span>Sin invertir, tu dinero compra como…</span><b>${money0(realMat)}</b></div>
+      <div class="stat"><span>En tu cuenta compra como…</span><b>${money0(realAcc)}</b></div>
+      <div class="stat"><span>Lo que hoy cuesta S/ 10 costará</span><b>${money(price)}</b></div>
+      <div class="stat"><span>Pérdida sin invertir</span><b style="color:var(--bad)">${nf0.format((1 - realMat / v.mon) * 100)} %</b></div>`;
+    const wins = v.tea > v.inf;
+    $('#msg', root).innerHTML = `<div class="note ${wins ? '' : 'warn'}">${wins ? 'Tu cuenta rinde más que la inflación: tu dinero gana poder de compra.' : v.tea === v.inf ? 'Tu cuenta apenas empata con la inflación: no pierdes ni ganas poder de compra.' : 'Tu cuenta rinde menos que la inflación: aunque el saldo suba, compras menos que antes.'}</div>`;
+    $('#ch', root).innerHTML = lineChart([
+      {name:'En tu cuenta', color:'var(--c2)', pts:acc},
+      {name:'Sin invertir', color:'var(--c1)', dash:true, pts:mat}
+    ], {xFmt: x => nf0.format(x) + ' a.', label:'Poder de compra del dinero con el paso de los años'});
+    lcd('Poder de compra en ' + yrs + ' años', money(realMat));
+  });
+}
+
+/* 8 · Fraudes */
+function simFraude(root){
+  const S = [
+    {from:'SMS · «BCP-Aviso»', msg:'Tu cuenta será bloqueada hoy. Valida tu clave ahora en bcp-seguro-pe.com.', fraud:true, why:'Mensaje urgente con un enlace que no es el oficial y que pide tu clave. Entra solo desde la app o la web oficial del banco.'},
+    {from:'En el kiosko', msg:'Un comprador te muestra en su celular la pantalla de «pago enviado» y pide que le entregues el producto.', fraud:true, why:'Una pantalla puede ser falsa o una captura editada. Verifica el ingreso en tu propia app antes de entregar.'},
+    {from:'Tienda en línea', msg:'Compras en una web con https, con Libro de Reclamaciones visible y pagas con tarjeta virtual de un solo uso.', fraud:false, why:'Tiene señales de confianza (https, reclamaciones) y usas un medio de pago con protección extra. Aun así, revisa el vendedor.'},
+    {from:'WhatsApp · número desconocido', msg:'¡Ganaste el bono Yape de S/ 350! Responde una encuesta y comparte este enlace con 10 amigos.', fraud:true, why:'No existe un bono así. Las promociones reales se anuncian en la app oficial, nunca piden compartir enlaces.'},
+    {from:'Llamada', msg:'«Soy del banco. Te llegará un código por SMS; dímelo para anular una compra que no reconoces».', fraud:true, why:'Nunca compartas códigos ni claves. Corta y llama tú al número oficial que está en tu tarjeta.'},
+    {from:'Tu app de Yape', msg:'Tu mamá te yapeó S/ 30 y el movimiento aparece en el historial de tu app con su nombre.', fraud:false, why:'El pago aparece en tu propia app oficial, que es la única fuente confiable para confirmar un yapeo.'},
+    {from:'Instagram', msg:'Una laptop a mitad de precio. Piden adelantar el 100 % por transferencia a una cuenta personal y no hay otra forma de pago.', fraud:true, why:'Precio demasiado bueno, presión y cuenta personal. Compra en tiendas con respaldo y paga contra entrega cuando se pueda.'}
+  ];
+  let i = 0, score = 0, ans = null;
+  function draw(){
+    if(i >= S.length){
+      const ok = score >= 6;
+      root.innerHTML = `<div class="phone"><h3>Resultado: ${score} de ${S.length}</h3>
+        <div class="note ${ok ? '' : 'warn'}">${ok ? '¡Buen ojo! Reconoces las señales.' : 'Repasa las señales: urgencia, premios fáciles, enlaces y pedido de claves.'}</div>
+        <p><b>Tres reglas de oro</b></p><ol><li>Nunca compartas claves ni códigos SMS.</li><li>Verifica los pagos en tu propia app.</li><li>Entra siempre desde la app o web oficial.</li></ol>
+        <button class="btn primary" id="again">Jugar de nuevo</button></div>`;
+      $('#again', root).onclick = () => { i = 0; score = 0; ans = null; draw(); };
+      lcd('Antifraude', score + ' / ' + S.length); return;
+    }
+    const s = S[i];
+    root.innerHTML = `<div class="phone"><div class="progress"><i style="width:${i / S.length * 100}%"></i></div>
+      <div class="bubble-from">${esc(s.from)}</div><div class="bubble">${esc(s.msg)}</div>
+      <div class="choices" id="ch"><button class="btn" data-a="0">Es seguro</button><button class="btn" data-a="1">Es fraude</button></div>
+      <div id="fb"></div></div>`;
+    $('#ch', root).onclick = e => {
+      const b = e.target.closest('button[data-a]'); if(!b || ans !== null) return;
+      ans = b.dataset.a === '1'; const ok = ans === s.fraud; if(ok) score++;
+      $('#fb', root).innerHTML = `<div class="note ${ok ? '' : 'bad'}" style="margin-top:.9rem"><b>${ok ? 'Correcto.' : 'No era así.'}</b> ${s.fraud ? 'Era fraude.' : 'Era seguro.'} ${esc(s.why)}</div>
+        <button class="btn primary" id="nx">${i === S.length - 1 ? 'Ver resultado' : 'Siguiente'}</button>`;
+      $('#ch', root).querySelectorAll('button').forEach(x => x.disabled = true);
+      $('#nx', root).onclick = () => { i++; ans = null; draw(); };
+      lcd('Antifraude', score + ' / ' + S.length);
+    };
+    lcd('Antifraude', score + ' / ' + S.length);
+  }
+  draw();
+}
+
+/* 9 · Previsión */
+function simPrevision(root){
+  root.innerHTML = `<h3>Fondo de emergencia</h3>
+    <div class="sim" id="A"><div class="controls">
+      ${field('gas', 'Gastos esenciales al mes', 500, 100, 3000, 50, 'S/')}
+      ${field('mm', 'Meses que quieres cubrir', 4, 1, 12, 1, 'meses')}
+      ${field('ya', 'Lo que ya tienes', 300, 0, 10000, 50, 'S/')}
+      ${field('ap', 'Cuánto aportas al mes', 100, 0, 1000, 10, 'S/')}</div>
+      <div><div class="stats" id="stA"></div><div id="msgA"></div></div></div>
+    <hr class="sep">
+    <h3>Empezar a los 18, a los 28 o a los 38</h3>
+    <div class="sim" id="B"><div class="controls">
+      ${field('ca', 'Aporte mensual', 100, 10, 1000, 10, 'S/')}
+      ${field('rt', 'Rendimiento anual (ejemplo)', 7, 1, 15, 0.5, '%')}
+      <p class="fine">Se aporta hasta los 65 años, con tasa fija de ejemplo. Los rendimientos reales no están garantizados.</p></div>
+      <div><div id="chB"></div><div id="msgB"></div></div></div>`;
+  bindFields($('#A', root), v => {
+    const target = v.gas * v.mm, falta = Math.max(0, target - v.ya);
+    const months = falta === 0 ? 0 : (v.ap > 0 ? Math.ceil(falta / v.ap) : null);
+    $('#stA', root).innerHTML = `<div class="stat"><span>Tu meta de emergencia</span><b>${money0(target)}</b></div>
+      <div class="stat"><span>Hoy cubres</span><b>${nf1.format(v.ya / (v.gas || 1))} meses</b></div>
+      <div class="stat"><span>Te falta</span><b>${money0(falta)}</b></div>
+      <div class="stat"><span>Lo completas en</span><b>${months === null ? '—' : months === 0 ? '¡Ya!' : nf0.format(months) + ' meses'}</b></div>`;
+    $('#msgA', root).innerHTML = `<div class="note ${v.mm < 3 ? 'warn' : ''}">${v.mm < 3 ? 'Se suele recomendar cubrir al menos 3 meses de gastos esenciales.' : 'Estás dentro del rango que suele recomendarse: entre 3 y 6 meses.'}</div>`;
+    lcd('Meta de emergencia', money0(target));
+  });
+  bindFields($('#B', root), v => {
+    const i = monthly(v.rt);
+    const fv = age => { const n = (65 - age) * 12; return v.ca * (Math.pow(1 + i, n) - 1) / i; };
+    const a = fv(18), b = fv(28), c = fv(38);
+    $('#chB', root).innerHTML = barChart([
+      {label:'Desde los 18', sub:'47 años aportando', value:a, color:'var(--c2)'},
+      {label:'Desde los 28', sub:'37 años aportando', value:b, color:'var(--c3)'},
+      {label:'Desde los 38', sub:'27 años aportando', value:c, color:'var(--c1)'}], 'Dinero acumulado a los 65 según la edad de inicio');
+    $('#msgB', root).innerHTML = `<div class="note">Esperar 10 años (de 18 a 28) te deja ${money0(a - b)} menos a los 65, aunque solo dejaste de aportar ${money0(v.ca * 120)}.</div>`;
+    lcd('Esperar 10 años cuesta', money0(a - b));
+  });
+}
+
+/* ================================================================
+   PESTAÑAS: APRENDE · SIMULA · PRACTICA · APPS
+   ================================================================ */
+const prog = store.get('fe-progress', {});
+function saveProg(){ store.set('fe-progress', prog); }
+
+function renderLearn(root, t){
+  root.innerHTML = `<div class="learn">${t.learn.map(c => `<article><h3>${esc(c.h)}</h3><p>${esc(c.p)}</p></article>`).join('')}</div>
+    <div class="key-idea">${esc(t.idea)}</div>
+    <details class="pitch"><summary>Para el expositor</summary><p>${esc(t.pitch)}</p></details>`;
+  lcd('Idea clave', 'Tecla ' + t.id);
+}
+function renderQuiz(root, t){
+  let i = 0, score = 0;
+  function draw(){
+    if(i >= t.quiz.length){
+      const best = Math.max(prog[t.id] || 0, score);
+      prog[t.id] = best; saveProg();
+      root.innerHTML = `<div class="quiz"><h3>Tu resultado: ${score} de ${t.quiz.length}</h3>
+        <div class="note ${score >= 2 ? '' : 'warn'}">${score >= 2 ? '¡Tecla completada! Ya aparece marcada en el teclado.' : 'Casi. Repasa la pestaña «Aprende» y vuelve a intentarlo: con 2 aciertos completas la tecla.'}</div>
+        <div style="display:flex;gap:.6rem;flex-wrap:wrap"><button class="btn" id="again">Repetir</button><a class="btn primary" href="#inicio">Volver al teclado</a></div></div>`;
+      $('#again', root).onclick = () => { i = 0; score = 0; draw(); };
+      lcd('Quiz tecla ' + t.id, score + ' / ' + t.quiz.length); return;
+    }
+    const q = t.quiz[i];
+    root.innerHTML = `<div class="quiz"><div class="progress"><i style="width:${i / t.quiz.length * 100}%"></i></div>
+      <h3>Pregunta ${i + 1} de ${t.quiz.length}</h3><p style="font-size:1.1rem;margin:.2rem 0">${esc(q.q)}</p>
+      <div class="opts" id="o">${q.o.map((x, k) => `<button class="opt" data-k="${k}">${esc(x)}</button>`).join('')}</div><div id="fb"></div></div>`;
+    $('#o', root).onclick = e => {
+      const b = e.target.closest('.opt'); if(!b || b.disabled) return;
+      const k = +b.dataset.k, ok = k === q.a; if(ok) score++;
+      $('#o', root).querySelectorAll('.opt').forEach((x, j) => {
+        x.disabled = true;
+        if(j === q.a){ x.classList.add('right'); x.insertAdjacentHTML('afterbegin', '<span class="mark" style="color:var(--ok)">✓</span>'); }
+        else if(j === k){ x.classList.add('wrong'); x.insertAdjacentHTML('afterbegin', '<span class="mark" style="color:var(--bad)">✗</span>'); }
+      });
+      $('#fb', root).innerHTML = `<div class="note ${ok ? '' : 'bad'}"><b>${ok ? 'Correcto.' : 'No exactamente.'}</b> ${esc(q.why)}</div>
+        <button class="btn primary" id="nx">${i === t.quiz.length - 1 ? 'Ver resultado' : 'Siguiente'}</button>`;
+      $('#nx', root).onclick = () => { i++; draw(); };
+      $('#nx', root).focus();
+      lcd('Quiz tecla ' + t.id, score + ' / ' + t.quiz.length);
+    };
+    lcd('Quiz tecla ' + t.id, score + ' / ' + t.quiz.length);
+  }
+  draw();
+}
+function renderApps(root, t){
+  root.innerHTML = `<p class="lead" style="margin-top:0">Estas son herramientas y entidades reales. Se abren en otra pestaña; en el stand puedes mostrar el QR para abrirlas desde el celular.</p>
+    <div class="apps">${t.apps.map((a, k) => `<div class="app"><span class="kind">${esc(a.kind)}</span><h3>${esc(a.name)}</h3><p style="margin:0">${esc(a.desc)}</p>
+      <span class="url">${esc(a.url.replace(/^https?:\/\//, ''))}</span>
+      <div class="row"><a class="btn primary" href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">Abrir</a><button class="btn" data-qr="${k}">Mostrar QR</button></div></div>`).join('')}</div>
+    <p class="fine" style="margin-top:1rem">Comprueba siempre que la dirección sea la oficial antes de ingresar datos personales.</p>`;
+  root.onclick = e => { const b = e.target.closest('[data-qr]'); if(b) showQR(t.apps[+b.dataset.qr]); };
+  lcd('Apps reales', t.apps.length + ' enlaces');
+}
+
+/* ---------- QR ---------- */
+const dlg = $('#qr');
+function showQR(a){
+  let svg = '';
+  if(typeof qrcode === 'function'){
+    try{
+      const q = qrcode(0, 'M'); q.addData(a.url); q.make();
+      svg = q.createSvgTag(6, 2).replace(/^<svg[^>]*>/, tag => tag.replace(/\s(width|height)="[^"]*"/g, ''));
+    }catch(e){ svg = ''; }
+  }
+  $('#qrTitle').textContent = a.name;
+  $('#qrBox').innerHTML = svg || '<p style="color:#13203A;text-align:center">No se pudo generar el código QR. Usa el enlace de abajo.</p>';
+  $('#qrUrl').textContent = a.url;
+  if(dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+}
+$('#qrClose').addEventListener('click', () => dlg.close ? dlg.close() : dlg.removeAttribute('open'));
+dlg.addEventListener('click', e => { if(e.target === dlg) dlg.close(); });
+
+/* ================================================================
+   VISTAS Y ENRUTADOR
+   ================================================================ */
+const app = $('#app');
+const TABS = [['aprende', 'Aprende'], ['simula', 'Simula'], ['practica', 'Practica'], ['apps', 'Apps reales']];
+
+function showHome(){
+  const done = TOPICS.filter(t => (prog[t.id] || 0) >= 2).length;
+  document.title = 'Finanzas escolares · Mesa de exposición';
+  app.innerHTML = `<h2>Nueve teclas para tu futuro financiero</h2>
+    <p class="lead">Toca una tecla. En cada una aprendes la idea, la pruebas en un simulador, practicas con tres preguntas y abres una app o entidad real.</p>
+    <div class="keypad">${TOPICS.map(t => {
+      const d = (prog[t.id] || 0) >= 2;
+      return `<button class="key${d ? ' is-done' : ''}" data-id="${t.id}" aria-label="Tecla ${t.id}: ${esc(t.title)}${d ? ', completada' : ''}">
+        <span class="num">${t.id}</span>${d ? '<span class="done">✓ completada</span>' : ''}
+        <span class="kt">${esc(t.title)}</span><span class="ks">${esc(t.sub)}</span></button>`;
+    }).join('')}</div>
+    <div class="legend-row"><span>Aprende</span><span>Simula</span><span>Practica</span><span>Apps reales</span></div>
+    <div class="home-foot"><span class="fine">Tu progreso se guarda en este dispositivo cuando el navegador lo permite.</span>
+      <button class="btn small" id="reset">Reiniciar progreso</button></div>`;
+  app.onclick = e => {
+    const k = e.target.closest('.key'); if(k) location.hash = 'tema-' + k.dataset.id + '-aprende';
+    if(e.target.id === 'reset'){ Object.keys(prog).forEach(x => delete prog[x]); saveProg(); showHome(); }
+  };
+  lcd('Teclas completadas', done + ' / 9');
+}
+
+function showTopic(id, tab){
+  const t = TOPICS[id - 1];
+  document.title = t.title + ' · Finanzas escolares';
+  app.innerHTML = `<div class="topic-head"><a class="back" href="#inicio">‹ Volver al teclado</a>
+    <h2 tabindex="-1" id="th"><span class="numtag">${t.id}</span>${esc(t.title)}</h2><p class="lead" style="margin:0">${esc(t.sub)}</p></div>
+    <nav class="tabs" aria-label="Secciones de la tecla ${t.id}">${TABS.map(x => `<a class="tab" href="#tema-${t.id}-${x[0]}"${x[0] === tab ? ' aria-current="page"' : ''}>${x[1]}</a>`).join('')}</nav>
+    <section class="panel" id="panel" aria-live="off"></section>`;
+  app.onclick = null;
+  const p = $('#panel');
+  if(tab === 'aprende') renderLearn(p, t);
+  else if(tab === 'simula') t.sim(p);
+  else if(tab === 'practica') renderQuiz(p, t);
+  else renderApps(p, t);
+}
+
+function route(){
+  const m = /^#tema-([1-9])(?:-(aprende|simula|practica|apps))?$/.exec(location.hash);
+  if(m) showTopic(+m[1], m[2] || 'aprende'); else showHome();
+  window.scrollTo(0, 0);
+}
+window.addEventListener('hashchange', route);
+
+/* ---------- ajustes: texto grande y modo stand ---------- */
+const cfg = store.get('fe-cfg', {big:false, kiosk:false});
+function applyCfg(){
+  document.documentElement.classList.toggle('big', !!cfg.big);
+  $('#btnBig').setAttribute('aria-pressed', !!cfg.big);
+  $('#btnKiosk').setAttribute('aria-pressed', !!cfg.kiosk);
+  store.set('fe-cfg', cfg);
+}
+$('#btnBig').addEventListener('click', () => { cfg.big = !cfg.big; applyCfg(); });
+$('#btnKiosk').addEventListener('click', () => { cfg.kiosk = !cfg.kiosk; applyCfg(); resetIdle(); });
+let idle = null;
+function resetIdle(){
+  clearTimeout(idle);
+  if(!cfg.kiosk) return;
+  idle = setTimeout(() => {
+    if(dlg.open) dlg.close();
+    if(location.hash && location.hash !== '#inicio') location.hash = 'inicio'; else route();
+  }, 90000);
+}
+['pointerdown', 'keydown', 'touchstart', 'input'].forEach(ev => document.addEventListener(ev, resetIdle, {passive:true}));
+
+applyCfg();
+route();
+})();
+</script>
+</body>
+</html>
